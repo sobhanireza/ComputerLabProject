@@ -1,4 +1,4 @@
-#Reza Sobhani (93990218)
+# Reza Sobhani (93990218)
 from tkinter import *
 from tkinter import filedialog
 from tkinter import messagebox
@@ -11,6 +11,42 @@ root = Tk()
 root.title('Image Processing')
 root.geometry("500x500")
 pathString = StringVar()
+
+
+def do_molten():
+    path = pathString.get()
+    if path:
+        try:
+            if len(sys.argv) == 2:
+                path = sys.argv[1]
+
+            img = Image.open(path)
+            img = molten(img)
+            img.save(os.path.splitext(path)[0] + '_Molten.jpg', 'JPEG')
+            messagebox.showinfo("Successful", "Successfully Done")
+            show_Image(os.path.splitext(path)[0] + '_Molten.jpg')
+        except:
+            messagebox.showerror("Error", "Error in image processing")
+    else:
+        messagebox.showerror("Error", "Please load an image")
+
+
+def molten(img):
+    if img.mode != "RGB":
+        img.convert("RGB")
+
+    width, height = img.size
+    pix = img.load()
+
+    for w in range(width):
+        for h in range(height):
+            r, g, b = pix[w, h]
+
+            pix[w, h] = min(255, int(abs(r * 128 / (g + b + 1)))), \
+                        min(255, int(abs(g * 128 / (b + r + 1)))), \
+                        min(255, int(abs(b * 128 / (r + g + 1))))
+
+    return img
 
 
 def do_oil_painting():
@@ -163,18 +199,6 @@ def do_darkness():
 
 def darkness(img):
     return img.point(lambda i: int(i ** 2 / 255))
-
-
-def do_face_identification():
-    path = pathString.get()
-    if path:
-        try:
-            messagebox.showerror("Error", "Please wait for library to download")
-
-        except:
-            messagebox.showerror("Error", "Error in image processing")
-    else:
-        messagebox.showerror("Error", "Please load an image")
 
 
 def do_face_detection():
@@ -416,7 +440,7 @@ def show_Image(path):
     # plt.imshow(im)
     # plt.show()
 
-    os.system("powershell -c "+path)
+    os.system("powershell -c " + path)
 
 
 pick_btn = Button(root, text="Pick Image", command=pickImage, width=20, bg="green")
@@ -437,9 +461,6 @@ sepia_btn.pack()
 face_detection_btn = Button(root, text="Face Detection", command=do_face_detection, width=15)
 face_detection_btn.pack()
 
-face_identication_btn = Button(root, text="Face Identification", command=do_face_identification, width=15)
-face_identication_btn.pack()
-
 darkness_btn = Button(root, text="Darkness", command=do_darkness, width=15)
 darkness_btn.pack()
 
@@ -448,5 +469,8 @@ aqua_btn.pack()
 
 oil_painting_btn = Button(root, text="Oil Painting", command=do_oil_painting, width=15)
 oil_painting_btn.pack()
+
+molten_btn = Button(root, text="Molten", command=do_molten, width=15)
+molten_btn.pack()
 
 root.mainloop()
