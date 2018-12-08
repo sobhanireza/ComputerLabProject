@@ -9,6 +9,7 @@ import Darkness
 import Aqua
 import OilPainting
 import Molten
+import Cartoonize
 import FaceDetection
 
 root = Tk()
@@ -19,8 +20,6 @@ pathString = StringVar()
 
 def pickImage():
     file = filedialog.askopenfilename(title="Choose an Image File")
-    print(file)
-    # Using try in case user types in unknown file or closes without choosing a file.
     try:
         if file:
             pathString.set(file)
@@ -56,6 +55,9 @@ oil_painting_btn.pack()
 
 molten_btn = Button(root, text="Molten", command=lambda: Molten.do_molten(pathString.get()), width=15)
 molten_btn.pack()
+
+cartoonize_btn = Button(root, text="Cartoonize", command=lambda: Cartoonize.do_cartoonize(pathString.get()), width=15)
+cartoonize_btn.pack()
 
 face_detection_btn = Button(root, text="Face Detection",
                             command=lambda: FaceDetection.do_face_detection(pathString.get()), width=15)
